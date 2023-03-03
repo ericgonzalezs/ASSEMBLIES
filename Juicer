@@ -1,4 +1,4 @@
-#create directories in the workind directory
+#create directories in the working directory
 mkdir somedirforjuicer
 cd somedirforjuicer
 git clone https://github.com/rmdickson/juicer.git
