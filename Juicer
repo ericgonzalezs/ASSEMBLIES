@@ -1,0 +1,61 @@
+#create directories in the workind directory
+mkdir somedirforjuicer
+cd somedirforjuicer
+git clone https://github.com/rmdickson/juicer.git
+cd ..
+
+mkdir somedirtorunjuicier
+cd somedirtorunjuicier
+ln -s ../somedirforjuicer/juicer/CPU/ scripts
+mkdir fastq
+cd fastq
+ln -s /pathtohicfastqfiles/file.R1.fastq.gz
+ln -s /pathtohicfastqfiles/file.R1.fastq.gz
+cd ..
+mkdir references
+cd references
+ln -s /pathtofasta/contigassembly.fasta
+bwa index contigassembly.fasta
+cd ..
+mkdir restriction_sites
+#download and modiffy generate_site_positions.py
+#Add to this section the path to your fasta
+filenames = {
+    'hg19': '/seq/references/Homo_sapiens_assembly19.fasta',
+    'contigassembly': '../references/contigassembly.fasta', #here I am adding the path to my fasta
+    'mm9' : '/seq/references/Mus_musculus_assembly9.fasta',
+    'mm10': '/seq/references/Mus_musculus_assembly10.fasta',
+    'hg18': '/seq/references/Homo_sapiens_assembly18.fasta',
+  }
+  
+#run generate_site_positions.py
+python generate_site_positions.py DpnII contigassembly
+
+#generate a the file Chromosome_sizes.sh with this:               
+for i in $(ls *DpnII.txt)
+do
+
+name=$(echo $i | cut -d "." -f 1 )
+
+awk 'BEGIN{OFS="\t"}{print $1, $NF}'  $i > "$name"".chrom.sizes"
+
+done
+
+#run it
+bash Chromosome_sizes.sh
+
+cd ..
+
+#run juicer with the file RUN_JUICER.sh  for compute canada
+
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --account=def-rieseber
+#SBATCH --time=3-0
+#SBATCH --gpus-per-node=a100:4
+#SBATCH --ntasks-per-node=24
+#SBATCH --mem=510000M
+module load StdEnv/2020 bwa/0.7.17 java/17.0.2 samtools/1.15.1  cudacore/.11.7.0 ucx-cuda/1.12.1 gcc/11.3.0 openmpi/4.1.4 cuda/11.7
+
+bash scripts/juicer.sh -D $PWD -g contigassembly -s DpnII -p restriction_sites/contigassembly.chrom.sizes -y restriction_sites/contigassembly_DpnII.txt -z references/contigassembly.fasta  -t 24
+
