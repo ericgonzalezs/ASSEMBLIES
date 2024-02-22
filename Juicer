@@ -7,6 +7,9 @@ cd ..
 mkdir somedirtorunjuicier
 cd somedirtorunjuicier
 ln -s ../somedirforjuicer/juicer/CPU/ scripts
+cd scripts/common
+wget https://hicfiles.tc4ga.com/public/juicer/juicer_tools.1.9.9_jcuda.0.8.jar
+ln -s juicer_tools.1.9.9_jcuda.0.8.jar  juicer_tools.jar
 mkdir fastq
 cd fastq
 ln -s /pathtohicfastqfiles/file.R1.fastq.gz
