@@ -1,0 +1,5 @@
+#you  can dowload Juicebox here:
+https://github.com/aidenlab/Juicebox/wiki/Download
+
+#you can run it like this:
+java -jar -Xmx30g Juicebox_1.11.08.jar
