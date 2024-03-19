@@ -74,4 +74,4 @@ bash scripts/juicer.sh -D $PWD -g contigassembly -s DpnII -p restriction_sites/c
 #SBATCH --mem=149G
 module load StdEnv/2020 bwa/0.7.17 java/17.0.2 samtools/1.15.1  cudacore/.11.7.0 ucx-cuda/1.12.1 gcc/11.3.0 openmpi/4.1.4 cuda/11.7
 
-bash scripts/juicer.sh -D $PWD -g contigassembly -s DpnII -p restriction_sites/contigassembly.chrom.sizes -y restriction_sites/contigassembly_DpnII.txt -z references/contigassembly.fasta  -t 24  -S early
+bash scripts/juicer.sh -D $PWD -g contigassembly -s DpnII -p restriction_sites/contigassembly.chrom.sizes -y restriction_sites/contigassembly_DpnII.txt -z references/contigassembly.fasta  -t 32  -S early
