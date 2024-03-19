@@ -35,7 +35,7 @@ filenames = {
 #run generate_site_positions.py
 python generate_site_positions.py DpnII contigassembly
 
-#generate a the file Chromosome_sizes.sh with this:               
+#after we finish running generate_site_positions.py, we run Chromosome_sizes.sh with this:               
 for i in $(ls *DpnII.txt)
 do
 
