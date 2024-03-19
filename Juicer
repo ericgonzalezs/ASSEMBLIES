@@ -14,7 +14,7 @@ cd ../../
 mkdir fastq
 cd fastq
 ln -s /pathtohicfastqfiles/file.R1.fastq.gz
-ln -s /pathtohicfastqfiles/file.R1.fastq.gz
+ln -s /pathtohicfastqfiles/file.R2.fastq.gz
 cd ..
 mkdir references
 cd references
