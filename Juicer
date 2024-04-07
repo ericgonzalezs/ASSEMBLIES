@@ -22,7 +22,7 @@ ln -s /pathtofasta/contigassembly.fasta
 bwa index contigassembly.fasta
 cd ..
 mkdir restriction_sites
-#download and modiffy generate_site_positions.py
+#download and modiffy generate_site_positions.py https://github.com/aidenlab/juicer/blob/main/misc/generate_site_positions.py
 #Add to this section the path to your fasta
 filenames = {
     'hg19': '/seq/references/Homo_sapiens_assembly19.fasta',
