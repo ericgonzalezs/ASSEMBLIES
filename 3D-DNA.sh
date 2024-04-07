@@ -1,11 +1,21 @@
+mkdir somedirtorun3ddna
+
 git clone https://github.com/aidenlab/3d-dna.git
+cd 3d-dna
 
 #create python env
 module load StdEnv/2020 python/3.11.2
- virtualenv 3ddna
+
+virtualenv 3ddna
+
+source 3ddna/bin/activate
 
   pip install scipy numpy matplotlib #libraries required for 3d-dna 
 
+deactivate
+
+ln -s /pathtoyourfasta/yourfasta.fasta
+ln -s /pathtoyourmergednodups/merged_nodups.txt
 
 #!/bin/bash
 #SBATCH --account=def-rieseber
@@ -14,7 +24,7 @@ module load StdEnv/2020 python/3.11.2
 #SBATCH --mem=100G
 module load StdEnv/2020 python/3.10.2 java/17.0.2 lastz/1.04.03
 
-export PATH="/home/egonza02/scratch/SOFTWARE/3D_DNA/3d-dna:$PATH"
+export PATH="/somedirwhereis3ddna/3d-dna:$PATH"
 
 source /home/egonza02/scratch/SOFTWARE/3D_DNA/3d-dna/3DDNA/bin/activate
 
