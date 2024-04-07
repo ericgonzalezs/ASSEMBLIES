@@ -22,6 +22,7 @@ ln -s /pathtofasta/contigassembly.fasta
 bwa index contigassembly.fasta
 cd ..
 mkdir restriction_sites
+cd restriction_sites
 #download and modiffy generate_site_positions.py https://github.com/aidenlab/juicer/blob/main/misc/generate_site_positions.py
 #Add to this section the path to your fasta
 filenames = {
