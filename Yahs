@@ -1,5 +1,6 @@
 #After running juicer, we going to use the file merged_nodups.txt to create a bed file for yahs
 #####################################################################################################
+
 #!/bin/bash
 #SBATCH --account=def-rieseber
 #SBATCH --time=3-0
@@ -37,6 +38,7 @@ awk '
 
 #######################################################################################
 #now we going to run yahs like this:
+
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --account=def-rieseber
@@ -88,7 +90,7 @@ awk '
 ' merged_nodups.txt > merged_nodups_onlyperfectmatches_softclip.txt
 
 ##############################################################################################
-###NOw we going to create our hic ans assmebly file to observe it in Juicebox
+###NOw we going to create our hic and assmebly file to observe it in Juicebox
 #########################
 
 #!/bin/bash
