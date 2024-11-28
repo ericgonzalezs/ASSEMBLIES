@@ -1,1 +1,108 @@
+#After running juicer, we going to use the file merged_nodups.txt to create a bed file for yahs
+#####################################################################################################
+#!/bin/bash
+#SBATCH --account=def-rieseber
+#SBATCH --time=3-0
+#SBATCH --mem=12G
 
+awk '
+{
+     if ($9 > 0 && $12 > 0) {
+    # Calculate end position for read 1 using pos1 and cigar1
+    cigar = $10
+    pos_start1 = $3
+    sum1 = 0
+    while (match(cigar, /([0-9]+)([MDNX=])/, arr)) {
+        sum1 += arr[1]
+        cigar = substr(cigar, RSTART + RLENGTH)
+    }
+    pos_end1 = pos_start1 + sum1  # End position for read 1
+
+    # Calculate end position for read 2 using pos2 and cigar2
+    cigar = $13
+    pos_start2 = $7
+    sum2 = 0
+    while (match(cigar, /([0-9]+)([MDNX=])/, arr)) {
+        sum2 += arr[1]
+        cigar = substr(cigar, RSTART + RLENGTH)
+    }
+    pos_end2 = pos_start2 + sum2  # End position for read 2
+
+    # Print interleaved output for read 1 and read 2
+    print $2, pos_start1, pos_end1, $15"/1", $9
+    print $6, pos_start2, pos_end2, $16"/2", $12
+}
+}
+' merged_nodups.txt > merged_nodups_for_yahs.bed
+
+#######################################################################################
+#now we going to run yahs like this:
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --account=def-rieseber
+#SBATCH --time=3-0
+#SBATCH --ntasks-per-node=64
+#SBATCH --mem=248G
+
+/home/egonza02/scratch/SOFTWARE/YAHS/yahs/yahs Harg2202_HIC_oldhifiasm.hic.hap1.fasta merged_nodups_for_yahs.bed
+
+
+#####################################
+#alternatively, to the  script above to generate the bed file, we can also add filters to the merged_nodups.txt alignments, to keep only sequences with perfect matches and soft clip sequences
+#the idea is to reduce the umber of sequences form the alternative haplotype
+
+#!/bin/bash
+#SBATCH --account=def-rieseber
+#SBATCH --time=3-0
+#SBATCH --mem=12G
+
+awk '
+{
+    # Check if mapping quality scores for both reads are > 0
+    if ($9 > 0 && $12 > 0) {
+
+        # Check if CIGAR strings match the allowed patterns
+        if (($10 ~ /^[0-9]+M$/ || $10 ~ /^[0-9]+M[0-9]*S$/ || $10 ~ /^[0-9]*S[0-9]+M$/) &&
+            ($13 ~ /^[0-9]+M$/ || $13 ~ /^[0-9]+M[0-9]*S$/ || $13 ~ /^[0-9]*S[0-9]+M$/)) {
+
+            # Extract the lengths for M and ensure it is >= 80
+            match($10, /([0-9]+)M/, arr1)
+            match($13, /([0-9]+)M/, arr2)
+
+            if (arr1[1] >= 80 && arr2[1] >= 80) {
+                # Calculate end position for read 1
+               # pos_start1 = $3
+               # pos_end1 = pos_start1 + arr1[1]
+
+                # Calculate end position for read 2
+               # pos_start2 = $7
+               # pos_end2 = pos_start2 + arr2[1]
+
+                # Print interleaved output for read 1 and read 2
+                print $0
+
+            }
+        }
+    }
+}
+' merged_nodups.txt > merged_nodups_onlyperfectmatches_softclip.txt
+
+##############################################################################################
+###NOw we going to create our hic ans assmebly file to observe it in Juicebox
+#########################
+
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --account=def-rieseber
+#SBATCH --time=3-0
+#SBATCH --ntasks-per-node=64
+#SBATCH --mem=248G
+
+module load StdEnv/2020 python/3.11.2 java/17.0.2 lastz/1.04.03
+
+/home/egonza02/scratch/SOFTWARE/YAHS/yahs/juicer pre -a -o out_JBAT yahs.out.bin yahs.out_scaffolds_final.agp Harg2202_HIC_oldhifiasm.h
+ic.hap1.fasta.fai >out_JBAT.log 2>&1
+
+(java -jar -Xmx240G /home/egonza02/scratch/ASSEMBLIES/SCAFFOLDING/CPU_MODE/JUICER_NEW_FASTAS/ICGS/Harg2202_HIC_oldhifiasm.hic.hap1/alig
+ned/Create_output_for_Yahs/RUN_JUICERAGAIN/scripts/common/juicer_tools.1.9.9_jcuda.0.8.jar pre out_JBAT.txt out_JBAT.hic.part <(cat out
+_JBAT.log  | grep PRE_C_SIZE | awk '{print $2" "$3}')) && (mv out_JBAT.hic.part out_JBAT.hic)
