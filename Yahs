@@ -90,7 +90,7 @@ awk '
 ' merged_nodups.txt > merged_nodups_onlyperfectmatches_softclip.txt
 
 ##############################################################################################
-###NOw we going to create our hic and assmebly file to observe it in Juicebox
+###NOw we going to create our hic and assembly file to observe it in Juicebox
 #########################
 
 #!/bin/bash
