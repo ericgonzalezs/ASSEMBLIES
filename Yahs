@@ -94,19 +94,20 @@ awk '
 
             if (arr1[1] >= 80 && arr2[1] >= 80) {
                 # Calculate end position for read 1
-               # pos_start1 = $3
-               # pos_end1 = pos_start1 + arr1[1]
+                pos_start1 = $3
+                pos_end1 = pos_start1 + arr1[1]
 
                 # Calculate end position for read 2
-               # pos_start2 = $7
-               # pos_end2 = pos_start2 + arr2[1]
+                pos_start2 = $7
+                pos_end2 = pos_start2 + arr2[1]
 
                 # Print interleaved output for read 1 and read 2
-                print $0
-
+                print $2, pos_start1, pos_end1, $15"/1", $9
+                print $6, pos_start2, pos_end2, $16"/2", $12
             }
         }
     }
 }
-' merged_nodups.txt > merged_nodups_onlyperfectmatches_softclip.txt
+' merged_nodups.txt > merged_nodups_foryahs_onlyperfectmatches_softclip.bed
+
 
