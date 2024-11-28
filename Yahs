@@ -5,7 +5,7 @@
 
 #!/bin/bash
 #SBATCH --account=def-rieseber
-#SBATCH --time=3-0
+#SBATCH --time=0-3
 #SBATCH --mem=12G
 
 awk '
@@ -44,20 +44,39 @@ awk '
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --account=def-rieseber
-#SBATCH --time=3-0
+#SBATCH --time=0-3
 #SBATCH --ntasks-per-node=64
 #SBATCH --mem=248G
 
 /home/egonza02/scratch/SOFTWARE/YAHS/yahs/yahs Harg2202_HIC_oldhifiasm.hic.hap1.fasta merged_nodups_for_yahs.bed
 
+##############################################################################################
+###NOw we going to create our hic and assembly file to observe it in Juicebox
+#########################
+
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --account=def-rieseber
+#SBATCH --time=3-0
+#SBATCH --ntasks-per-node=64
+#SBATCH --mem=248G
+
+module load StdEnv/2020 python/3.11.2 java/17.0.2 lastz/1.04.03
+
+/home/egonza02/scratch/SOFTWARE/YAHS/yahs/juicer pre -a -o out_JBAT yahs.out.bin yahs.out_scaffolds_final.agp Harg2202_HIC_oldhifiasm.h
+ic.hap1.fasta.fai >out_JBAT.log 2>&1
+
+(java -jar -Xmx240G /home/egonza02/scratch/ASSEMBLIES/SCAFFOLDING/CPU_MODE/JUICER_NEW_FASTAS/ICGS/Harg2202_HIC_oldhifiasm.hic.hap1/alig
+ned/Create_output_for_Yahs/RUN_JUICERAGAIN/scripts/common/juicer_tools.1.9.9_jcuda.0.8.jar pre out_JBAT.txt out_JBAT.hic.part <(cat out
+_JBAT.log  | grep PRE_C_SIZE | awk '{print $2" "$3}')) && (mv out_JBAT.hic.part out_JBAT.hic)
 
 #####################################
 #alternatively, to the  script above to generate the bed file, we can also add filters to the merged_nodups.txt alignments, to keep only sequences with perfect matches and soft clip sequences
-#the idea is to reduce the umber of sequences form the alternative haplotype
+#the idea is to reduce the number of sequences from the alternative haplotype
 
 #!/bin/bash
 #SBATCH --account=def-rieseber
-#SBATCH --time=3-0
+#SBATCH --time=0-1
 #SBATCH --mem=12G
 
 awk '
@@ -91,22 +110,3 @@ awk '
 }
 ' merged_nodups.txt > merged_nodups_onlyperfectmatches_softclip.txt
 
-##############################################################################################
-###NOw we going to create our hic and assembly file to observe it in Juicebox
-#########################
-
-#!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --account=def-rieseber
-#SBATCH --time=3-0
-#SBATCH --ntasks-per-node=64
-#SBATCH --mem=248G
-
-module load StdEnv/2020 python/3.11.2 java/17.0.2 lastz/1.04.03
-
-/home/egonza02/scratch/SOFTWARE/YAHS/yahs/juicer pre -a -o out_JBAT yahs.out.bin yahs.out_scaffolds_final.agp Harg2202_HIC_oldhifiasm.h
-ic.hap1.fasta.fai >out_JBAT.log 2>&1
-
-(java -jar -Xmx240G /home/egonza02/scratch/ASSEMBLIES/SCAFFOLDING/CPU_MODE/JUICER_NEW_FASTAS/ICGS/Harg2202_HIC_oldhifiasm.hic.hap1/alig
-ned/Create_output_for_Yahs/RUN_JUICERAGAIN/scripts/common/juicer_tools.1.9.9_jcuda.0.8.jar pre out_JBAT.txt out_JBAT.hic.part <(cat out
-_JBAT.log  | grep PRE_C_SIZE | awk '{print $2" "$3}')) && (mv out_JBAT.hic.part out_JBAT.hic)
