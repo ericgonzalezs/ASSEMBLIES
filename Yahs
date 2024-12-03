@@ -65,12 +65,9 @@ samtools faidx Harg2202_HIC_oldhifiasm.hic.hap1.fasta
 
 module load StdEnv/2020 python/3.11.2 java/17.0.2 lastz/1.04.03
 
-/home/egonza02/scratch/SOFTWARE/YAHS/yahs/juicer pre -a -o out_JBAT yahs.out.bin yahs.out_scaffolds_final.agp Harg2202_HIC_oldhifiasm.h
-ic.hap1.fasta.fai >out_JBAT.log 2>&1
+/home/egonza02/scratch/SOFTWARE/YAHS/yahs/juicer pre -a -o out_JBAT yahs.out.bin yahs.out_scaffolds_final.agp Harg2202_HIC_oldhifiasm.hic.hap1.fasta.fai >out_JBAT.log 2>&1
 
-(java -jar -Xmx240G /home/egonza02/scratch/ASSEMBLIES/SCAFFOLDING/CPU_MODE/JUICER_NEW_FASTAS/ICGS/Harg2202_HIC_oldhifiasm.hic.hap1/alig
-ned/Create_output_for_Yahs/RUN_JUICERAGAIN/scripts/common/juicer_tools.1.9.9_jcuda.0.8.jar pre out_JBAT.txt out_JBAT.hic.part <(cat out
-_JBAT.log  | grep PRE_C_SIZE | awk '{print $2" "$3}')) && (mv out_JBAT.hic.part out_JBAT.hic)
+(java -jar -Xmx240G /home/egonza02/scratch/ASSEMBLIES/SCAFFOLDING/CPU_MODE/JUICER_NEW_FASTAS/ICGS/Harg2202_HIC_oldhifiasm.hic.hap1/aligned/Create_output_for_Yahs/RUN_JUICERAGAIN/scripts/common/juicer_tools.1.9.9_jcuda.0.8.jar pre out_JBAT.txt out_JBAT.hic.part <(cat out_JBAT.log  | grep PRE_C_SIZE | awk '{print $2" "$3}')) && (mv out_JBAT.hic.part out_JBAT.hic)
 
 #####################################
 #alternatively, to the  script above to generate the bed file, we can also add filters to the merged_nodups.txt alignments, to keep only sequences with perfect matches and soft clip sequences
