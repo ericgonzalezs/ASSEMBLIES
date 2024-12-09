@@ -45,8 +45,8 @@ awk '
 #SBATCH --nodes=1
 #SBATCH --account=def-rieseber
 #SBATCH --time=0-3
-#SBATCH --ntasks-per-node=64
-#SBATCH --mem=248G
+#SBATCH --ntasks-per-node=2
+#SBATCH --mem=100G
 module load  StdEnv/2023  gcc/12.3  samtools/1.20
 samtools faidx Harg2202_HIC_oldhifiasm.hic.hap1.fasta
 
